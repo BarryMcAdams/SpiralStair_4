@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType> <!-- Changed from Exe -->
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms> <!-- Added for WinForms support -->
+    <PlatformTarget>x64</PlatformTarget> <!-- Added for AutoCAD compatibility -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion> <!-- Optional: Use latest C# features -->
+  </PropertyGroup>
+
+  <!-- Add References to AutoCAD API Assemblies -->
+  <!-- IMPORTANT: Update HintPath to your AutoCAD installation directory -->
+  <ItemGroup>
+    <Reference Include="accoremgd">
+      <HintPath>C:\Users\AdamsLaptop\source\repos\2023\accoremgd.dll</HintPath> <!-- Adjust Path -->
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="acdbmgd">
+      <HintPath>C:\Users\AdamsLaptop\source\repos\2023\acdbmgd.dll</HintPath> <!-- Adjust Path -->
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="acmgd">
+      <HintPath>C:\Users\AdamsLaptop\source\repos\2023\acmgd.dll</HintPath> <!-- Adjust Path -->
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
