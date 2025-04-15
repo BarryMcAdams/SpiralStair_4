@@ -224,7 +224,7 @@ namespace SpiralStair_4
 
             Point3d p1, p2, p3, p4; // Points defining the base profile at Z=0
             DBObjectCollection curves = new DBObjectCollection();
-            Region sectorRegion = null;
+            Autodesk.AutoCAD.DatabaseServices.Region sectorRegion = null;
             Solid3d sectorSolid = null;
 
             try
@@ -246,12 +246,12 @@ namespace SpiralStair_4
 
 
                 // Create Region from curves
-                DBObjectCollection regions = Region.CreateFromCurves(curves);
+                DBObjectCollection regions = Autodesk.AutoCAD.DatabaseServices.Region.CreateFromCurves(curves);
                 if (regions == null || regions.Count == 0)
                 {
                     throw new InvalidOperationException("Failed to create region from boundary curves.");
                 }
-                sectorRegion = regions[0] as Region;
+                sectorRegion = regions[0] as Autodesk.AutoCAD.DatabaseServices.Region;
                 if (sectorRegion == null)
                 {
                      // Dispose potential other regions if needed, though usually only one is expected
@@ -266,7 +266,7 @@ namespace SpiralStair_4
                 // Extrude the region to create the solid
                 sectorSolid = new Solid3d();
                 // Extrude downwards by thickness, so top surface is at zLevelTop
-                sectorSolid.ExtrudeRegion(sectorRegion, -thickness, 0); // Negative thickness for downward extrusion
+                sectorSolid.Extrude(sectorRegion, -thickness, 0); // Negative thickness for downward extrusion, taper angle 0 for straight sides
 
                 // Move the solid to the correct Z level
                 Matrix3d transform = Matrix3d.Displacement(new Vector3d(0, 0, zLevelTop));
@@ -328,7 +328,7 @@ namespace SpiralStair_4
 
 
             Polyline polyline = null;
-            Region landingRegion = null;
+            Autodesk.AutoCAD.DatabaseServices.Region landingRegion = null;
             Solid3d landingSolid = null;
 
             try
@@ -349,7 +349,7 @@ namespace SpiralStair_4
 
                 // Create region from polyline
                 DBObjectCollection curves = new DBObjectCollection { polyline };
-                DBObjectCollection regions = Region.CreateFromCurves(curves);
+                DBObjectCollection regions = Autodesk.AutoCAD.DatabaseServices.Region.CreateFromCurves(curves);
                  // Dispose polyline now region is made (or let using handle it if polyline declared in using)
                 polyline.Dispose(); // Dispose explicitly here
                 curves.Clear();
@@ -358,7 +358,7 @@ namespace SpiralStair_4
                 {
                     throw new InvalidOperationException("Failed to create region for top landing.");
                 }
-                landingRegion = regions[0] as Region;
+                landingRegion = regions[0] as Autodesk.AutoCAD.DatabaseServices.Region;
                  if (landingRegion == null)
                 {
                      foreach(DBObject obj in regions) obj.Dispose();
@@ -368,7 +368,7 @@ namespace SpiralStair_4
 
                 // Extrude the region (downwards, similar to treads)
                 landingSolid = new Solid3d();
-                landingSolid.ExtrudeRegion(landingRegion, -stairData.TopLandingThickness, 0);
+                landingSolid.Extrude(landingRegion, -stairData.TopLandingThickness, 0); // Taper angle 0 for straight sides
                 landingRegion.Dispose(); // Dispose region after extrusion
 
                 // --- Transformation ---

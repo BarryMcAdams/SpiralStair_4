@@ -20,10 +20,10 @@ namespace SpiralStair_4
         [CommandMethod("GenerateSpiralStair", CommandFlags.Modal)]
         public static void ExecuteGenerateSpiralStair()
         {
-            Document acadDoc = Application.DocumentManager.MdiActiveDocument;
+            Document acadDoc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
             if (acadDoc == null)
             {
-                Application.ShowAlertDialog("No active AutoCAD document found. Please open a drawing.");
+                Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog("No active AutoCAD document found. Please open a drawing.");
                 return;
             }
             Database acadDb = acadDoc.Database;
@@ -38,7 +38,7 @@ namespace SpiralStair_4
                 acadEditor.WriteMessage("\nOpening input form...");
                 SpiralStairForm inputForm = new SpiralStairForm();
                 // Use Application.ShowModalDialog for AutoCAD context
-                DialogResult formResult = Application.ShowModalDialog(inputForm);
+                DialogResult formResult = Autodesk.AutoCAD.ApplicationServices.Application.ShowModalDialog(inputForm);
 
                 if (formResult != DialogResult.OK)
                 {
@@ -51,7 +51,7 @@ namespace SpiralStair_4
                 {
                     // This shouldn't happen if DialogResult is OK, but check defensively
                     acadEditor.WriteMessage("\n*Error* Failed to retrieve data from input form. Aborting.");
-                    Application.ShowAlertDialog("An internal error occurred retrieving input data.");
+                    Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog("An internal error occurred retrieving input data.");
                     return;
                 }
                 acadEditor.WriteMessage("\nInput received successfully.");
@@ -77,7 +77,7 @@ namespace SpiralStair_4
                     acadEditor.WriteMessage($"\n{promptTitle}. Displaying prompt...");
                     string suggestions = validationService.GenerateSuggestions(stairData);
                     ViolationPromptForm promptForm = new ViolationPromptForm(stairData.ValidationIssues, suggestions, stairData.RequiresMidlanding, stairData.NumberOfTreads);
-                    DialogResult promptDialogResult = Application.ShowModalDialog(promptForm);
+                    DialogResult promptDialogResult = Autodesk.AutoCAD.ApplicationServices.Application.ShowModalDialog(promptForm);
 
                     // Process user action from the prompt form
                     switch (promptForm.UserAction)
@@ -101,7 +101,7 @@ namespace SpiralStair_4
                                 if (!stairData.MidlandingPositionIndex.HasValue)
                                 {
                                     acadEditor.WriteMessage("\n*Error* Midlanding required but position not selected or invalid. Aborting.");
-                                    Application.ShowAlertDialog("Midlanding position was not correctly selected.");
+                                    Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog("Midlanding position was not correctly selected.");
                                     return;
                                 }
                                 acadEditor.WriteMessage($"\nProceeding with midlanding replacing Tread #{stairData.MidlandingPositionIndex.Value + 1} (0-based index: {stairData.MidlandingPositionIndex.Value}).");
@@ -114,7 +114,7 @@ namespace SpiralStair_4
 
                         default:
                             acadEditor.WriteMessage("\n*Error* Unknown action received from violation prompt. Aborting.");
-                            Application.ShowAlertDialog("An internal error occurred processing the violation prompt response.");
+                            Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog("An internal error occurred processing the violation prompt response.");
                             return; // Exit command
                     }
                 }
@@ -134,7 +134,7 @@ namespace SpiralStair_4
                     if (!geometrySuccess)
                     {
                         acadEditor.WriteMessage("\n*Error* Geometry generation failed. Operation cancelled and rolled back by transaction.");
-                        Application.ShowAlertDialog("Failed to generate the stair geometry. Check command line for details.");
+                        Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog("Failed to generate the stair geometry. Check command line for details.");
                         // Transaction is aborted within GenerateStairGeometry on failure
                         return; // Exit command
                     }
@@ -159,7 +159,7 @@ namespace SpiralStair_4
                                   $"\nTrace: {ex.StackTrace}";
                 acadEditor.WriteMessage(errorMsg);
                 System.Diagnostics.Debug.WriteLine($"SpiralStair Error: {ex.ToString()}"); // For debugging
-                Application.ShowAlertDialog($"An unexpected error occurred:\n{ex.Message}\n\nSee command line or debug output for details.");
+                Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog($"An unexpected error occurred:\n{ex.Message}\n\nSee command line or debug output for details.");
             }
             finally
             {

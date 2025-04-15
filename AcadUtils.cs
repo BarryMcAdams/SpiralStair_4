@@ -5,6 +5,8 @@ using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.Colors; // Required for Color
 using System;
 using System.Collections.Generic; // Required for List
+using Autodesk.AutoCAD.EditorInput; // Required for Editor
+
 
 // Note: Error handling within these utilities is minimal for brevity,
 // relying on the calling methods (like GeometryGenerator) to manage transactions and top-level errors.
@@ -26,8 +28,8 @@ namespace SpiralStair_4
             if (db == null) return;
             try
             {
-                db.Lunits = 4;      // Decimal units
-                db.Luniprec = 4;    // 4 decimal places
+                Autodesk.AutoCAD.ApplicationServices.Application.SetSystemVariable("LUNITS", 4); // Decimal units (4)
+                Autodesk.AutoCAD.ApplicationServices.Application.SetSystemVariable("LUPREC", 4); // 4 decimal places
                 db.Insunits = UnitsValue.Inches; // Insertion scale units
             }
             catch (System.Exception ex)
@@ -65,7 +67,7 @@ namespace SpiralStair_4
                     ltr = new LayerTableRecord
                     {
                         Name = layerName,
-                        Color = Color.FromColorIndex(ColorMethod.ByAci, colorIndex),
+                        Color = Autodesk.AutoCAD.Colors.Color.FromColorIndex(ColorMethod.ByAci, colorIndex),
                         LineWeight = lineWeight
                     };
 
@@ -268,7 +270,7 @@ namespace SpiralStair_4
         /// <param name="message">The message to log.</param>
         private static void LogWarning(string message)
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument?.Editor;
+            Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument?.Editor;
             ed?.WriteMessage($"\nWARNING (AcadUtils): {message}");
             System.Diagnostics.Debug.WriteLine($"WARNING (AcadUtils): {message}"); // Also write to debug output
         }
@@ -279,7 +281,7 @@ namespace SpiralStair_4
         /// <param name="message">The message to log.</param>
         public static void LogError(string message) // Made public for potential use elsewhere
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument?.Editor;
+            Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument?.Editor;
             ed?.WriteMessage($"\nERROR (AcadUtils): {message}");
              System.Diagnostics.Debug.WriteLine($"ERROR (AcadUtils): {message}"); // Also write to debug output
         }

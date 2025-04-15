@@ -1,0 +1,10 @@
+(defun draw-circle ()
+  (progn
+    (setq center (getpoint "\nEnter center point: "))
+    (setq radius (getreal "\nEnter radius: "))
+    (if (<= radius 0)
+      (alert "Radius must be greater than 0")
+      (circle center radius)
+    )
+  )
+)
